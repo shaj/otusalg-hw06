@@ -1,3 +1,8 @@
+
+*.sublime-workspace
+*.pro.user*
+*.txt
+
 CMakeCache.txt
 CMakeFiles
 CMakeScripts
@@ -7,3 +12,4 @@ cmake_install.cmake
 install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
+
