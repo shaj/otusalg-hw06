@@ -58,6 +58,12 @@ int main(int argc, char const *argv[])
 			read_data(fs, v);
 			fs.close();
 
+			std::cout << "merge_sort: " << measure<std::chrono::microseconds>::execution([&]()
+				{
+					otusalg::merge_sort(v.begin(), v.end(), std::less(v));
+				}) << " us\n";
+
+
 			otusalg::heap<int> h;
 			std::cout << "buildHeap: " << measure<std::chrono::microseconds>::execution([&]()
 				{

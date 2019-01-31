@@ -2,7 +2,7 @@
 
 import random
 
-arraysize = 18
+arraysize = 67890
 ia = int(arraysize * 0.05)
 ib = int(arraysize * 0.95)
 print(ia, ib)
