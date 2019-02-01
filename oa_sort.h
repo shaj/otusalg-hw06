@@ -12,8 +12,8 @@ namespace otusalg
 /**
    Сортировка вставкой на С
  */
-template <typename T>
-int insertion_sort(std::vector<T> &v)
+template <typename T, typename Compare>
+int insertion_sort(std::vector<T> &v, Compare comp)
 {
 	T x;
 	int j;
@@ -21,7 +21,7 @@ int insertion_sort(std::vector<T> &v)
 	{
 		x = v[i];
 		j = i - 1;
-		while((j >= 0) && (v[j] > x))
+		while((j >= 0) && (comp(x, v[j])))
 		{
 			v[j + 1] = v[j];
 			j--;

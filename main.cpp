@@ -60,28 +60,27 @@ int main(int argc, char const *argv[])
 
 			std::cout << "merge_sort: " << measure<std::chrono::microseconds>::execution([&]()
 				{
-					otusalg::merge_sort(v.begin(), v.end(), std::less(v));
+					otusalg::merge_sort(v, std::less<int>());
 				}) << " us\n";
 
+			if(std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector sorted\n";
+			else std::cout << "vector NOT sorted\n";
+			std::cout << std::endl;
 
-			otusalg::heap<int> h;
-			std::cout << "buildHeap: " << measure<std::chrono::microseconds>::execution([&]()
+			// std::copy(v.begin(), v.end(), std::ostream_iterator<int>(std::cout, " "));
+
+			fs.open(argv[1]);
+			read_data(fs, v);
+			fs.close();
+
+			std::cout << "merge_sort_mt: " << measure<std::chrono::microseconds>::execution([&]()
 				{
-					h.buildHeap(v.begin(), v.end());
+					otusalg::merge_sort_mt(v, std::less<int>());
 				}) << " us\n";
-			std::ofstream fos("out_1.dot");
-			h.printHeap_dot(fos);
-			fos.close();
 
-			int rm = v.size() / 3;
-			std::cout << "remove: " << measure<std::chrono::microseconds>::execution([&]()
-				{
-					h.remove(rm);
-				}) << " us\n";
-			std::cout << "removed item " << rm << std::endl;
-			fos.open("out_2.dot");
-			h.printHeap_dot(fos);
-			fos.close();
+			if(std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector sorted\n";
+			else std::cout << "vector NOT sorted\n";
+			std::cout << std::endl;
 
 		}
 		else
