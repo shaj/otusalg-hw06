@@ -7,10 +7,15 @@
 #include <random>
 #include <algorithm>
 #include <type_traits>
+#include <functional>
 
 
 namespace otusalg
 {
+
+// template<typename T>
+// typedef void (*gen_func)(std::size_t, std::vector<int>&);
+using gen_func=std::function<void (std::size_t, std::vector<int>&)>;
 
 /*
 	  *sort: random data

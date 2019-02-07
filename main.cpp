@@ -1,6 +1,8 @@
 
 #include <iostream>
+#include <iomanip>
 #include <vector>
+#include <array>
 #include <chrono>
 #include <memory>
 #include <algorithm>
@@ -36,36 +38,51 @@ struct measure
 int main(int argc, char const *argv[])
 {
 
+	using namespace std::placeholders;
+	using restype=measure<std::chrono::microseconds>::type;
+
 	// otusalg::print_gen_test(std::cout, 30);
 
 	std::vector<int> v;
 	std::vector<int> sizes {10000, 20000, 32768, 65536, 131072, 262144, 524288, 1048576};
-	std::vector<otusalg::gen_func> func_vec 
+	// std::vector<otusalg::gen_func> func_vec;
+	std::vector<otusalg::gen_func> func_vec
 		{
-			otusalg::gen_type1, 
-			otusalg::gen_type2, 
-			otusalg::gen_type3, 
-			otusalg::gen_type4, 
-			otusalg::gen_type5, 
-			otusalg::gen_type6, 
-			otusalg::gen_type7, 
-			otusalg::gen_type8, 
-			otusalg::gen_type9 
+			std::bind(&otusalg::gen_type1<int>, _1, _2), 
+			std::bind(&otusalg::gen_type2<int>, _1, _2),
+			std::bind(&otusalg::gen_type3<int>, _1, _2), 
+			std::bind(&otusalg::gen_type4<int>, _1, _2), 
+			std::bind(&otusalg::gen_type5<int>, _1, _2), 
+			std::bind(&otusalg::gen_type6<int>, _1, _2), 
+			std::bind(&otusalg::gen_type7<int>, _1, _2), 
+			std::bind(&otusalg::gen_type8<int>, _1, _2), 
+			std::bind(&otusalg::gen_type9<int>, _1, _2) 
 		};
 
-	std::vector<measure<std::chrono::microseconds>::type> vres(sizes.size());
+	int alg_cnt = 1;   // Количество тестируемых алгоритмов
+	int sample_cnt = sizes.size() * func_vec.size() * alg_cnt;
 
-	for(auto sz : sizes)
+	std::vector<std::vector<std::vector<restype>>> vres(sizes.size(), std::vector<std::vector<restype>>(func_vec.size(), std::vector<restype>(alg_cnt, 0)));
+
+	std::cout << "Sample: " << std::setw(5) << sample_cnt << "\r" << std::flush;
+
+	for(int i=0; i<sizes.size(); i++)
 	{
-		for(auto func : func_vec)
+
+		for(int j=0; j<func_vec.size(); j++)
 		{
-			func(sz, v);
-			vres[sz.cnt] = measure<std::chrono::microseconds>::execution([&]()
+			func_vec[j](sizes[i], v);
+			vres[i][j][0] = measure<std::chrono::microseconds>::execution([&]()
 			{
-				std::sort(v.begin(), v.end());
+				std::sort(v.begin(), v.end(), std::less<int>());
 			});
+			
+			std::cout << "Sample: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
 		}
 	}
+
+	std::cout << std::endl;
+
 
 	// if(argc > 1)
 	// {
