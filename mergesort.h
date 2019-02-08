@@ -12,7 +12,7 @@
 namespace otusalg
 {
 
-static auto merge_min = 300U;
+static auto merge_min = 4000U;
 
 template <typename T, typename Compare>
 void merge_sort(std::vector<T> &v, Compare comp)

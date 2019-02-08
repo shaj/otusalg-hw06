@@ -10,6 +10,8 @@
 #include <functional>
 #include <fstream>
 
+#include "oa_sort.h"
+#include "heap.h"
 #include "mergesort.h"
 #include "quicksort.h"
 #include "generators.h"
@@ -59,7 +61,7 @@ int main(int argc, char const *argv[])
 			std::bind(&otusalg::gen_type9<int>, _1, _2) 
 		};
 
-	int alg_cnt = 1;   // Количество тестируемых алгоритмов
+	int alg_cnt = 7;   // Количество тестируемых алгоритмов
 	int sample_cnt = sizes.size() * func_vec.size() * alg_cnt;
 
 	std::vector<std::vector<std::vector<restype>>> vres(sizes.size(), std::vector<std::vector<restype>>(func_vec.size(), std::vector<restype>(alg_cnt, 0)));
@@ -76,12 +78,98 @@ int main(int argc, char const *argv[])
 			{
 				std::sort(v.begin(), v.end(), std::less<int>());
 			});
-			
+			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted\n";
+			std::cout << "Sample: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
+
+
+			if(v.size() < 100000)
+			{
+				func_vec[j](sizes[i], v);
+				vres[i][j][1] = measure<std::chrono::microseconds>::execution([&]()
+				{
+					otusalg::insertion_sort(v, std::less<int>());
+				});
+				if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted\n";
+				std::cout << "Sample: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
+
+
+				func_vec[j](sizes[i], v);
+				vres[i][j][2] = measure<std::chrono::microseconds>::execution([&]()
+				{
+					otusalg::ins_sort(v.begin(), v.end(), std::less<int>());
+				});
+				if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted\n";
+				std::cout << "Sample: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
+			}
+			else
+			{
+				vres[i][j][1] = 0;
+				vres[i][j][2] = 0;
+				sample_cnt -= 2;
+			}
+
+
+			func_vec[j](sizes[i], v);
+			vres[i][j][3] = measure<std::chrono::microseconds>::execution([&]()
+			{
+				otusalg::shell_sort_c(v);
+			});
+			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted\n";
+			std::cout << "Sample: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
+
+
+			std::vector<int> steps {1750, 701, 301, 132, 57, 23, 10, 4, 1};
+			func_vec[j](sizes[i], v);
+			vres[i][j][4] = measure<std::chrono::microseconds>::execution([&]()
+			{
+				otusalg::shell_sort_ck(v, steps);
+			});
+			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted\n";
+			std::cout << "Sample: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
+
+
+			otusalg::heap<int> h;
+			std::vector<int> vvv;
+			func_vec[j](sizes[i], v);
+			vres[i][j][5] = measure<std::chrono::microseconds>::execution([&]()
+			{
+				h.buildHeap(v.begin(), v.end());
+				vvv = std::move(h.getSorted());
+			});
+			if(!std::is_sorted(vvv.begin(), vvv.end(), std::less<int>())) std::cout << "vector NOT sorted\n";
+			std::cout << "Sample: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
+
+
+			func_vec[j](sizes[i], v);
+			vres[i][j][6] = measure<std::chrono::microseconds>::execution([&]()
+			{
+				otusalg::merge_sort(v, std::less<int>());
+			});
+			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted\n";
 			std::cout << "Sample: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
 		}
 	}
 
 	std::cout << std::endl;
+
+	std::ofstream fos("algorithm.csv");
+	fos << "\n";
+	for(int i=0; i<alg_cnt; i++)
+	{
+		fos << "Algorithm " << i << "\n";
+		for(int j=0; j<sizes.size(); j++)
+		{
+			fos << sizes[j] << "\t";
+			for(int k=0; k<func_vec.size(); k++)
+			{
+				fos << vres[j][k][i] << "\t";
+			}
+			fos << "\n";
+		}
+		fos << "\n";
+	}
+	fos.close();
+
 
 
 	// if(argc > 1)
