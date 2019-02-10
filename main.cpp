@@ -45,6 +45,7 @@ int main(int argc, char const *argv[])
 
 	// otusalg::print_gen_test(std::cout, 30);
 
+	std::vector<int> gen;
 	std::vector<int> v;
 	std::vector<int> sizes {10000, 20000, 32768, 65536, 131072, 262144, 524288, 1048576};
 	// std::vector<otusalg::gen_func> func_vec;
@@ -73,32 +74,37 @@ int main(int argc, char const *argv[])
 
 		for(int j=0; j<func_vec.size(); j++)
 		{
-			func_vec[j](sizes[i], v);
+			func_vec[j](sizes[i], gen);
+
+			v.clear();
+			std::copy(gen.begin(), gen.end(), std::back_inserter(v));
 			vres[i][j][0] = measure<std::chrono::microseconds>::execution([&]()
 			{
 				std::sort(v.begin(), v.end(), std::less<int>());
 			});
-			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted\n";
+			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted [0] std::sort\n";
 			std::cout << "Sample: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
 
 
 			if(v.size() < 100000)
 			{
-				func_vec[j](sizes[i], v);
+				v.clear();
+				std::copy(gen.begin(), gen.end(), std::back_inserter(v));
 				vres[i][j][1] = measure<std::chrono::microseconds>::execution([&]()
 				{
 					otusalg::insertion_sort(v, std::less<int>());
 				});
-				if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted\n";
+				if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted [1] otusalg::insertion_sort\n";
 				std::cout << "Sample: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
 
 
-				func_vec[j](sizes[i], v);
+				v.clear();
+				std::copy(gen.begin(), gen.end(), std::back_inserter(v));
 				vres[i][j][2] = measure<std::chrono::microseconds>::execution([&]()
 				{
 					otusalg::ins_sort(v.begin(), v.end(), std::less<int>());
 				});
-				if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted\n";
+				if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted [2] otusalg::ins_sort\n";
 				std::cout << "Sample: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
 			}
 			else
@@ -109,58 +115,104 @@ int main(int argc, char const *argv[])
 			}
 
 
-			func_vec[j](sizes[i], v);
+			v.clear();
+			std::copy(gen.begin(), gen.end(), std::back_inserter(v));
 			vres[i][j][3] = measure<std::chrono::microseconds>::execution([&]()
 			{
 				otusalg::shell_sort_c(v);
 			});
-			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted\n";
+			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted [3] otusalg::shell_sort_c\n";
 			std::cout << "Sample: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
 
 
 			std::vector<int> steps {1750, 701, 301, 132, 57, 23, 10, 4, 1};
-			func_vec[j](sizes[i], v);
+			v.clear();
+			std::copy(gen.begin(), gen.end(), std::back_inserter(v));
 			vres[i][j][4] = measure<std::chrono::microseconds>::execution([&]()
 			{
 				otusalg::shell_sort_ck(v, steps);
 			});
-			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted\n";
+			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted [4] otusalg::shell_sort_ck\n";
 			std::cout << "Sample: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
 
 
 			otusalg::heap<int> h;
 			std::vector<int> vvv;
-			func_vec[j](sizes[i], v);
+			v.clear();
+			std::copy(gen.begin(), gen.end(), std::back_inserter(v));
 			vres[i][j][5] = measure<std::chrono::microseconds>::execution([&]()
 			{
 				h.buildHeap(v.begin(), v.end());
 				vvv = std::move(h.getSorted());
 			});
-			if(!std::is_sorted(vvv.begin(), vvv.end(), std::less<int>())) std::cout << "vector NOT sorted\n";
+			if(!std::is_sorted(vvv.begin(), vvv.end(), std::greater<int>())) std::cout << "vector NOT sorted [5] heap\n";
 			std::cout << "Sample: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
 
 
-			func_vec[j](sizes[i], v);
+			v.clear();
+			std::copy(gen.begin(), gen.end(), std::back_inserter(v));
 			vres[i][j][6] = measure<std::chrono::microseconds>::execution([&]()
 			{
 				otusalg::merge_sort(v, std::less<int>());
 			});
-			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted\n";
+			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted [6] otusalg::merge_sort\n";
 			std::cout << "Sample: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
 		}
 	}
 
 	std::cout << std::endl;
+	std::ofstream fos;
 
-	std::ofstream fos("algorithm.csv");
+	fos.open("alg.tsv");
 	fos << "\n";
 	for(int i=0; i<alg_cnt; i++)
 	{
 		fos << "Algorithm " << i << "\n";
+		fos << "Size\tshaffle\trandom\taccending\tdecending\t3 random exchanges\t10 random at the end\trandomly replace 1%\tmany duplicates\tall equal\n"; 
 		for(int j=0; j<sizes.size(); j++)
 		{
 			fos << sizes[j] << "\t";
 			for(int k=0; k<func_vec.size(); k++)
+			{
+				fos << vres[j][k][i] << "\t";
+			}
+			fos << "\n";
+		}
+		fos << "\n";
+	}
+	fos.close();
+
+
+	fos.open("gen.tsv");
+	fos << "\n";
+	for(int k=0; k<func_vec.size(); k++)
+	{
+		fos << "Generator " << k << "\n";
+		fos << "Size\tstd::sort\totusalg::insertion_sort\totusalg::ins_sort\totusalg::shell_sort_c\totusalg::shell_sort_ck\totusalg::heap\totusalg::merge_sort\n"; 
+		for(int j=0; j<sizes.size(); j++)
+		{
+			fos << sizes[j] << "\t";
+			for(int i=0; i<alg_cnt; i++)
+			{
+				fos << vres[j][k][i] << "\t";
+			}
+			fos << "\n";
+		}
+		fos << "\n";
+	}
+	fos.close();
+
+
+	fos.open("size.tsv");
+	fos << "\n";
+	for(int j=0; j<sizes.size(); j++)
+	{
+		fos << "Size " << sizes[j] << "\n";
+		fos << "Generator\tstd::sort\totusalg::insertion_sort\totusalg::ins_sort\totusalg::shell_sort_c\totusalg::shell_sort_ck\totusalg::heap\totusalg::merge_sort\n"; 
+		for(int k=0; k<func_vec.size(); k++)
+		{
+			fos << "\t";
+			for(int i=0; i<alg_cnt; i++)
 			{
 				fos << vres[j][k][i] << "\t";
 			}

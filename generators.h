@@ -90,7 +90,7 @@ void gen_type3(std::size_t l, std::vector<T> &v)
 
 
 /**
- * Данные по убыванию от 0 до l
+ * Данные по убыванию от l до 0
  */
 template<typename T>
 void gen_type4(std::size_t l, std::vector<T> &v)
