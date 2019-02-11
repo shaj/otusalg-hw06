@@ -17,10 +17,7 @@ private:
 	std::vector<T> v;
 
 public:
-	heap()
-	{
-		// v = std::make_unique(new std::vector<T>);
-	}
+	heap(){}
 
 	heap(heap &h) = delete;
 	heap(heap &&h) = delete;

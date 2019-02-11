@@ -86,7 +86,7 @@ int main(int argc, char const *argv[])
 			std::cout << "Sample: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
 
 
-			if(v.size() < 100000)
+			if(gen.size() < 100000)
 			{
 				v.clear();
 				std::copy(gen.begin(), gen.end(), std::back_inserter(v));
@@ -222,51 +222,6 @@ int main(int argc, char const *argv[])
 	}
 	fos.close();
 
-
-
-	// if(argc > 1)
-	// {
-	// 	std::cout << "'" << argv[1] << "'\n";
-
-	// 	std::vector<int> v;
-	// 	std::ifstream fs;
-	// 	fs.open(argv[1], std::ios::in);
- 
-	// 	if(fs.is_open())
-	// 	{
-	// 		read_data(fs, v);
-	// 		fs.close();
-
-	// 		std::cout << "merge_sort: " << measure<std::chrono::microseconds>::execution([&]()
-	// 			{
-	// 				otusalg::merge_sort(v, std::less<int>());
-	// 			}) << " us\n";
-
-	// 		if(std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector sorted\n";
-	// 		else std::cout << "vector NOT sorted\n";
-	// 		std::cout << std::endl;
-
-	// 		// std::copy(v.begin(), v.end(), std::ostream_iterator<int>(std::cout, " "));
-
-	// 		fs.open(argv[1]);
-	// 		read_data(fs, v);
-	// 		fs.close();
-
-	// 		std::cout << "merge_sort_mt: " << measure<std::chrono::microseconds>::execution([&]()
-	// 			{
-	// 				otusalg::merge_sort_mt(v, std::less<int>());
-	// 			}) << " us\n";
-
-	// 		if(std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector sorted\n";
-	// 		else std::cout << "vector NOT sorted\n";
-	// 		std::cout << std::endl;
-
-	// 	}
-	// 	else
-	// 	{
-	// 		std::cout << "File '" << argv[1] << "' does not exist" << std::endl;
-	// 	}
-	// }
 
 	return 0;
 }
