@@ -194,7 +194,7 @@ void gen_type7(std::size_t l, std::vector<T> &v)
  * Много повторов
  */
 template<typename T>
-void gen_type8(std::size_t l, std::vector<T> &v)
+void gen_type8(std::size_t l, std::vector<T> &v, T vmin, T vmax)
 {
 	static_assert(std::is_integral<T>::value, "Integral required.");
 	
@@ -203,10 +203,13 @@ void gen_type8(std::size_t l, std::vector<T> &v)
 	std::random_device rd;
 	std::mt19937 g(rd());
 
-	std::size_t cnt = 5;
-	if(l > 1000) cnt = l / 1000;
+	if(vmin >= vmax)
+	{
+		vmin = 0;
+		if(l > 1000) vmax = l / 1000;
+	}
 	
-	std::uniform_int_distribution<T> dist(0, cnt);
+	std::uniform_int_distribution<T> dist(vmin, vmax);
 	for(std::size_t i=0; i<l; i++)
 	{
 		v.emplace_back(dist(rd));

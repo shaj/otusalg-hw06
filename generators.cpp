@@ -48,7 +48,7 @@ void otusalg::print_gen_test(std::ostream &os, std::size_t sz)
 	os << "\n\n";
 
 	os << "Type 8. many duplicates:\n";
-	otusalg::gen_type8(sz, v);
+	otusalg::gen_type8(sz, v, 0, 0);
 	std::copy(v.begin(), v.end(), std::ostream_iterator<int>(os, " "));
 	os << "\n\n";
 
