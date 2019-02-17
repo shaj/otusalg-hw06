@@ -67,7 +67,7 @@ int main(int argc, char const *argv[])
 
 	std::vector<std::vector<std::vector<restype>>> vres(sizes.size(), std::vector<std::vector<restype>>(func_vec.size(), std::vector<restype>(alg_cnt, 0)));
 
-	std::cout << "Test: " << std::setw(5) << sample_cnt << "\r" << std::flush;
+	std::cout << "Test: " << std::setw(5) << sample_cnt << " start\r" << std::flush;
 
 	for(int i=0; i<sizes.size(); i++)
 	{
@@ -83,7 +83,9 @@ int main(int argc, char const *argv[])
 				std::sort(v.begin(), v.end(), std::less<int>());
 			});
 			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted [0] std::sort\n";
-			std::cout << "Test: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
+			std::cout << "Test: " << std::setw(5) << --sample_cnt 
+				<< " alg std::sort; gen " << j 
+				<< " size " << std::setw(8) << sizes[i] <<"\r" << std::flush;
 
 
 			if(gen.size() < 100000)
@@ -95,7 +97,9 @@ int main(int argc, char const *argv[])
 					otusalg::insertion_sort(v, std::less<int>());
 				});
 				if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted [1] otusalg::insertion_sort\n";
-				std::cout << "Test: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
+				std::cout << "Test: " << std::setw(5) << --sample_cnt 
+					<< " alg otusalg::insertion_sort; gen " << j 
+					<< " size " << std::setw(8) << sizes[i] <<"\r" << std::flush;
 
 
 				v.clear();
@@ -105,7 +109,9 @@ int main(int argc, char const *argv[])
 					otusalg::ins_sort(v.begin(), v.end(), std::less<int>());
 				});
 				if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted [2] otusalg::ins_sort\n";
-				std::cout << "Test: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
+				std::cout << "Test: " << std::setw(5) << --sample_cnt 
+					<< " alg otusalg::ins_sort; gen " << j 
+					<< " size " << std::setw(8) << sizes[i] <<"\r" << std::flush;
 			}
 			else
 			{
@@ -122,7 +128,9 @@ int main(int argc, char const *argv[])
 				otusalg::shell_sort_c(v);
 			});
 			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted [3] otusalg::shell_sort_c\n";
-			std::cout << "Test: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
+			std::cout << "Test: " << std::setw(5) << --sample_cnt 
+				<< " alg otusalg::shell_sort_c; gen " << j 
+				<< " size " << std::setw(8) << sizes[i] <<"\r" << std::flush;
 
 
 			std::vector<int> steps {1750, 701, 301, 132, 57, 23, 10, 4, 1};
@@ -133,7 +141,9 @@ int main(int argc, char const *argv[])
 				otusalg::shell_sort_ck(v, steps);
 			});
 			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted [4] otusalg::shell_sort_ck\n";
-			std::cout << "Test: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
+			std::cout << "Test: " << std::setw(5) << --sample_cnt 
+				<< " alg otusalg::shell_sort_ck; gen " << j 
+				<< " size " << std::setw(8) << sizes[i] <<"\r" << std::flush;
 
 
 			otusalg::heap<int> h;
@@ -146,7 +156,9 @@ int main(int argc, char const *argv[])
 				vvv = std::move(h.getSorted());
 			});
 			if(!std::is_sorted(vvv.begin(), vvv.end(), std::greater<int>())) std::cout << "vector NOT sorted [5] heap\n";
-			std::cout << "Test: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
+			std::cout << "Test: " << std::setw(5) << --sample_cnt 
+				<< " alg otusalg::Heap; gen " << j 
+				<< " size " << std::setw(8) << sizes[i] <<"\r" << std::flush;
 
 
 			v.clear();
@@ -156,7 +168,9 @@ int main(int argc, char const *argv[])
 				otusalg::merge_sort(v, std::less<int>());
 			});
 			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted [6] otusalg::merge_sort\n";
-			std::cout << "Test: " << std::setw(5) << --sample_cnt << "\r" << std::flush;
+			std::cout << "Test: " << std::setw(5) << --sample_cnt 
+				<< " alg otusalg::merge_sort; gen " << j 
+				<< " size " << std::setw(8) << sizes[i] <<"\r" << std::flush;
 		}
 	}
 
