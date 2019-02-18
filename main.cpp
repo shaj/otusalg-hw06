@@ -47,7 +47,8 @@ int main(int argc, char const *argv[])
 
 	std::vector<int> gen;
 	std::vector<int> v;
-	std::vector<int> sizes {10000, 20000, 32768, 65536, 131072, 262144, 524288, 1048576};
+	// std::vector<int> sizes {10000, 20000, 32768, 65536, 131072, 262144, 524288, 1048576};
+	std::vector<int> sizes {10000, 20000};
 	auto gen_type8_b = std::bind(&otusalg::gen_type8<int>, _1, _2, 0, 0);
 	std::vector<otusalg::gen_func> func_vec
 		{
@@ -164,63 +165,84 @@ int main(int argc, char const *argv[])
 	std::ofstream fos;
 
 	fos.open("alg.tsv");
-	fos << "\n";
-	for(int i=0; i<alg_cnt; i++)
+	if(fos.is_open())
 	{
-		fos << "Algorithm " << i << "\n";
-		fos << "Size\tshaffle\trandom\taccending\tdecending\t3 random exchanges\t10 random at the end\trandomly replace 1%\tmany duplicates\tall equal\n"; 
-		for(int j=0; j<sizes.size(); j++)
+		fos << "\n";
+		for(int i=0; i<alg_cnt; i++)
 		{
-			fos << sizes[j] << "\t";
-			for(int k=0; k<func_vec.size(); k++)
+			fos << "Algorithm " << i << "\n";
+			fos << "Size\tshaffle\trandom\taccending\tdecending\t3 random exchanges\t10 random at the end\trandomly replace 1%\tmany duplicates\tall equal\n"; 
+			for(int j=0; j<sizes.size(); j++)
 			{
-				fos << vres[j][k][i] << "\t";
+				fos << sizes[j] << "\t";
+				for(int k=0; k<func_vec.size(); k++)
+				{
+					fos << vres[j][k][i] << "\t";
+				}
+				fos << "\n";
 			}
 			fos << "\n";
 		}
-		fos << "\n";
+		fos.close();
 	}
-	fos.close();
+	else
+	{
+		std::cout << "Can't create file alg.tsv" << std::endl;
+	}
 
 
 	fos.open("gen.tsv");
-	fos << "\n";
-	for(int k=0; k<func_vec.size(); k++)
+	if(fos.is_open())
 	{
-		fos << "Generator " << k << "\n";
-		fos << "Size\tstd::sort\totusalg::insertion_sort\totusalg::ins_sort\totusalg::shell_sort_c\totusalg::shell_sort_ck\totusalg::heap\totusalg::merge_sort\n"; 
-		for(int j=0; j<sizes.size(); j++)
+		fos << "\n";
+		for(int k=0; k<func_vec.size(); k++)
 		{
-			fos << sizes[j] << "\t";
-			for(int i=0; i<alg_cnt; i++)
+			fos << "Generator " << k << "\n";
+			fos << "Size\tstd::sort\totusalg::insertion_sort\totusalg::ins_sort\totusalg::shell_sort_c\totusalg::shell_sort_ck\totusalg::heap\totusalg::merge_sort\n"; 
+			for(int j=0; j<sizes.size(); j++)
 			{
-				fos << vres[j][k][i] << "\t";
+				fos << sizes[j] << "\t";
+				for(int i=0; i<alg_cnt; i++)
+				{
+					fos << vres[j][k][i] << "\t";
+				}
+				fos << "\n";
 			}
 			fos << "\n";
 		}
-		fos << "\n";
+		fos.close();
 	}
-	fos.close();
+	else
+	{
+		std::cout << "Can't create file gen.tsv" << std::endl;
+	}
 
 
 	fos.open("size.tsv");
-	fos << "\n";
-	for(int j=0; j<sizes.size(); j++)
+	if(fos.is_open())
 	{
-		fos << "Size " << sizes[j] << "\n";
-		fos << "Generator\tstd::sort\totusalg::insertion_sort\totusalg::ins_sort\totusalg::shell_sort_c\totusalg::shell_sort_ck\totusalg::heap\totusalg::merge_sort\n"; 
-		for(int k=0; k<func_vec.size(); k++)
+		fos << "\n";
+		for(int j=0; j<sizes.size(); j++)
 		{
-			fos << "\t";
-			for(int i=0; i<alg_cnt; i++)
+			fos << "Size " << sizes[j] << "\n";
+			fos << "Generator\tstd::sort\totusalg::insertion_sort\totusalg::ins_sort\totusalg::shell_sort_c\totusalg::shell_sort_ck\totusalg::heap\totusalg::merge_sort\n"; 
+			for(int k=0; k<func_vec.size(); k++)
 			{
-				fos << vres[j][k][i] << "\t";
+				fos << "\t";
+				for(int i=0; i<alg_cnt; i++)
+				{
+					fos << vres[j][k][i] << "\t";
+				}
+				fos << "\n";
 			}
 			fos << "\n";
 		}
-		fos << "\n";
+		fos.close();
 	}
-	fos.close();
+	else
+	{
+		std::cout << "Can't create file size.tsv" << std::endl;
+	}
 
 
 	return 0;
