@@ -38,31 +38,43 @@ void merge_sort(std::vector<T> &v, Compare comp)
 	ri = nv2.begin();
 	for(auto i = v.begin(); i != v.end(); i++)
 	{
-		if(comp(*li, *ri))
-		{ // В массив записываем li
-			if(li != nv1.end())
-			{
-				*i = *li;
-				li++;
-			}
-			else
-			{
-				*i = *ri;
-				ri++;
-			}
-		}
+		// if(comp(*li, *ri))
+		// { // В массив записываем li
+		// 	if(li != nv1.end())
+		// 	{
+		// 		*i = *li;
+		// 		li++;
+		// 	}
+		// 	else
+		// 	{
+		// 		*i = *ri;
+		// 		ri++;
+		// 	}
+		// }
+		// else
+		// { // В массив записываем ri
+		// 	if(ri != nv2.end())
+		// 	{
+		// 		*i = *ri;
+		// 		ri++;
+		// 	}
+		// 	else
+		// 	{
+		// 		*i = *li;
+		// 		li++;
+		// 	}
+		// }
+
+		if(li == nv1.end())
+			*i = *ri++;
+		else if(ri == nv2.end())
+			*i = *li++;
 		else
-		{ // В массив записываем ri
-			if(ri != nv2.end())
-			{
-				*i = *ri;
-				ri++;
-			}
+		{
+			if(comp(*li, *ri))
+				*i = *li++;
 			else
-			{
-				*i = *li;
-				li++;
-			}
+				*i = *ri++;
 		}
 	}
 
@@ -99,31 +111,16 @@ void merge_sort_mt(std::vector<T> &v, Compare comp)
 	ri = nv2.begin();
 	for(auto i = v.begin(); i != v.end(); i++)
 	{
-		if(comp(*li, *ri))
-		{ // В массив записываем li
-			if(li != nv1.end())
-			{
-				*i = *li;
-				li++;
-			}
-			else
-			{
-				*i = *ri;
-				ri++;
-			}
-		}
+		if(li == nv1.end())
+			*i = *ri++;
+		else if(ri == nv2.end())
+			*i = *li++;
 		else
-		{ // В массив записываем ri
-			if(ri != nv2.end())
-			{
-				*i = *ri;
-				ri++;
-			}
+		{
+			if(comp(*li, *ri))
+				*i = *li++;
 			else
-			{
-				*i = *li;
-				li++;
-			}
+				*i = *ri++;
 		}
 	}
 

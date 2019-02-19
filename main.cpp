@@ -47,8 +47,9 @@ int main(int argc, char const *argv[])
 
 	std::vector<int> gen;
 	std::vector<int> v;
-	// std::vector<int> sizes {10000, 20000, 32768, 65536, 131072, 262144, 524288, 1048576};
-	std::vector<int> sizes {10000, 20000};
+	std::vector<int> sample;
+	std::vector<int> sizes {10000, 20000, 32768, 65536, 131072, 262144, 524288, 1048576};
+	// std::vector<int> sizes {10000, 20000};
 	auto gen_type8_b = std::bind(&otusalg::gen_type8<int>, _1, _2, 0, 0);
 	std::vector<otusalg::gen_func> func_vec
 		{
@@ -68,7 +69,9 @@ int main(int argc, char const *argv[])
 
 	std::vector<std::vector<std::vector<restype>>> vres(sizes.size(), std::vector<std::vector<restype>>(func_vec.size(), std::vector<restype>(alg_cnt, 0)));
 
-	std::cout << "Test: " << std::setw(5) << sample_cnt << " start\r" << std::flush;
+	std::cout << "Test: " << std::setw(5) << sample_cnt 
+		<< " std::sort;               gen " << 0 
+		<< " size " << std::setw(8) << sizes[0] <<"\r" << std::flush;
 
 	for(int i=0; i<sizes.size(); i++)
 	{
@@ -83,9 +86,11 @@ int main(int argc, char const *argv[])
 			{
 				std::sort(v.begin(), v.end(), std::less<int>());
 			});
-			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted [0] std::sort\n";
+			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "\nvector NOT sorted [0] std::sort\n";
+			sample.clear();
+			std::copy(v.begin(), v.end(), std::back_inserter(sample));
 			std::cout << "Test: " << std::setw(5) << --sample_cnt 
-				<< " alg std::sort; gen " << j 
+				<< " otusalg::insertion_sort; gen " << j 
 				<< " size " << std::setw(8) << sizes[i] <<"\r" << std::flush;
 
 
@@ -97,9 +102,10 @@ int main(int argc, char const *argv[])
 				{
 					otusalg::insertion_sort(v, std::less<int>());
 				});
-				if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted [1] otusalg::insertion_sort\n";
+				if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "\nvector NOT sorted [1] otusalg::insertion_sort\n";
+				if(v != sample) std::cout << "\nthe result is incorrect\n";
 				std::cout << "Test: " << std::setw(5) << --sample_cnt 
-					<< " alg otusalg::insertion_sort; gen " << j 
+					<< " otusalg::ins_sort;       gen " << j 
 					<< " size " << std::setw(8) << sizes[i] <<"\r" << std::flush;
 
 
@@ -109,9 +115,10 @@ int main(int argc, char const *argv[])
 				{
 					otusalg::ins_sort(v.begin(), v.end(), std::less<int>());
 				});
-				if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted [2] otusalg::ins_sort\n";
+				if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "\nvector NOT sorted [2] otusalg::ins_sort\n";
+				if(v != sample) std::cout << "\nthe result is incorrect\n";
 				std::cout << "Test: " << std::setw(5) << --sample_cnt 
-					<< " alg otusalg::ins_sort; gen " << j 
+					<< " otusalg::shell_sort_c;   gen " << j 
 					<< " size " << std::setw(8) << sizes[i] <<"\r" << std::flush;
 			}
 			else
@@ -119,6 +126,10 @@ int main(int argc, char const *argv[])
 				vres[i][j][1] = 0;
 				vres[i][j][2] = 0;
 				sample_cnt -= 2;
+
+				std::cout << "Test: " << std::setw(5) << sample_cnt 
+					<< " otusalg::shell_sort_ck;  gen " << j 
+					<< " size " << std::setw(8) << sizes[i] <<"\r" << std::flush;
 			}
 
 
@@ -128,9 +139,10 @@ int main(int argc, char const *argv[])
 			{
 				otusalg::shell_sort_c(v);
 			});
-			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted [3] otusalg::shell_sort_c\n";
+			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "\nvector NOT sorted [3] otusalg::shell_sort_c\n";
+			if(v != sample) std::cout << "\nthe result is incorrect\n";
 			std::cout << "Test: " << std::setw(5) << --sample_cnt 
-				<< " alg otusalg::shell_sort_c; gen " << j 
+				<< " otusalg::shell_sort_ck;  gen " << j 
 				<< " size " << std::setw(8) << sizes[i] <<"\r" << std::flush;
 
 
@@ -141,24 +153,24 @@ int main(int argc, char const *argv[])
 			{
 				otusalg::shell_sort_ck(v, steps);
 			});
-			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted [4] otusalg::shell_sort_ck\n";
+			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "\nvector NOT sorted [4] otusalg::shell_sort_ck\n";
+			if(v != sample) std::cout << "\nthe result is incorrect\n";
 			std::cout << "Test: " << std::setw(5) << --sample_cnt 
-				<< " alg otusalg::shell_sort_ck; gen " << j 
+				<< " otusalg::Heap;           gen " << j 
 				<< " size " << std::setw(8) << sizes[i] <<"\r" << std::flush;
 
 
 			otusalg::heap<int> h;
 			std::vector<int> vvv;
-			v.clear();
-			std::copy(gen.begin(), gen.end(), std::back_inserter(v));
 			vres[i][j][5] = measure<std::chrono::microseconds>::execution([&]()
 			{
-				h.buildHeap(v.begin(), v.end());
+				h.buildHeap(gen.begin(), gen.end());
 				vvv = std::move(h.getSorted());
 			});
-			if(!std::is_sorted(vvv.begin(), vvv.end(), std::greater<int>())) std::cout << "vector NOT sorted [5] heap\n";
+			if(!std::is_sorted(vvv.begin(), vvv.end(), std::greater<int>())) std::cout << "\nvector NOT sorted [5] heap\n";
+			if(!std::equal(vvv.rbegin(), vvv.rend(), sample.begin())) std::cout << "\nthe result is incorrect\n";
 			std::cout << "Test: " << std::setw(5) << --sample_cnt 
-				<< " alg otusalg::Heap; gen " << j 
+				<< " otusalg::merge_sort;     gen " << j 
 				<< " size " << std::setw(8) << sizes[i] <<"\r" << std::flush;
 
 
@@ -168,9 +180,10 @@ int main(int argc, char const *argv[])
 			{
 				otusalg::merge_sort(v, std::less<int>());
 			});
-			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "vector NOT sorted [6] otusalg::merge_sort\n";
+			if(!std::is_sorted(v.begin(), v.end(), std::less<int>())) std::cout << "\nvector NOT sorted [6] otusalg::merge_sort\n";
+			if(v != sample) std::cout << "\nthe result is incorrect\n";
 			std::cout << "Test: " << std::setw(5) << --sample_cnt 
-				<< " alg otusalg::merge_sort; gen " << j 
+				<< " std::sort;               gen " << j 
 				<< " size " << std::setw(8) << sizes[i] <<"\r" << std::flush;
 		}
 	}

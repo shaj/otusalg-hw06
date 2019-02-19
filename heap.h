@@ -6,6 +6,7 @@
 #include <cmath>
 #include <iostream>
 
+
 namespace otusalg
 {
 
@@ -49,21 +50,24 @@ public:
 		std::size_t  largest = idx;
 		std::size_t  l = leftChild(x);
 		std::size_t  r = rightChild(x);
-		T tmp;
 
-		while((l <= v.size()) && (r <= v.size()))
+		while(l < v.size())
 		{
-			if(v[l] > v[r])
+			if(r >= v.size())
+			{
 				largest = l;
+			}
 			else
-				largest = r;
-
+			{
+				if(v[l] > v[r])
+					largest = l;
+				else
+					largest = r;
+			}
 			if(v[x] >= v[largest])
 				break;
 
-			tmp = v[x];
-			v[x] = v[largest];
-			v[largest] = tmp;
+			std::swap(v[x], v[largest]);
 
 			x = largest;
 			l = leftChild(x);
@@ -80,7 +84,7 @@ public:
 		v.clear();
 		std::copy(first, last, std::back_inserter(v));
 
-		for(int i=((v.size() -1) / 2); i>=0; i--)
+		for(int i=((v.size() - 1) / 2); i>=0; --i)
 		{
 			drown(i);
 		}
